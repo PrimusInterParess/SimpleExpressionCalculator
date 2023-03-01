@@ -1,0 +1,15 @@
+﻿@model DataModel;
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<section>
+    <h2>Simple math expression calculations</h2>
+    <form method="post">
+        <label for="calc">Enter expression here</label> 
+        <input id="calc" name="input"/>
+        <button type="submit">Calculate</button>
+    </form>
+    <p>Your result is: <b>@Model.Data</b></p>
+</section>
