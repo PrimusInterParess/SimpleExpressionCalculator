@@ -2,6 +2,8 @@
 {
     public interface IValidateService
     {
-        public bool IsInputValid(string input);
+        public void IsInputValid(string input);
+
+        public bool ZeroNumber(double number);
     }
 }

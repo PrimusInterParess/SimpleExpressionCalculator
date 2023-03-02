@@ -6,29 +6,32 @@ namespace MathExpressionSolver.Services
     {
         private readonly HashSet<char> elements = new HashSet<char> { '+', '-', '*', '/', '(', ')' };
 
-        public bool IsInputValid(string input)
+        public bool ZeroNumber(double number)
+        {
+            return number == 0;
+        }
+
+        public void IsInputValid(string input)
         {
             if (string.IsNullOrWhiteSpace(input))
             {
-                return false;
+                throw new InvalidOperationException("Input data is null or whitespace");
             }
 
-            if (input.Length < 2)
+            if (input.Length <= 2)
             {
-                return false;
+                throw new InvalidOperationException("Expression length is invalid");
             }
 
             if (ContainsCharacters(input))
             {
-                return false;
+                throw new InvalidOperationException("Invalid expression. Contains incorrect characters");
             }
 
-            if (AreParenthesisBalanced(input) == false) 
+            if (AreParenthesisBalanced(input) == false)
             {
-                return false;
+                throw new InvalidOperationException("Invalid expression. Parenthesis are unbalanced");
             }
-
-            return true;
         }
 
         private bool ContainsCharacters(string input)

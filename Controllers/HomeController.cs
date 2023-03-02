@@ -8,7 +8,7 @@ namespace MathExpressionSolver.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private ICalculate _calculate;
+        private readonly ICalculate _calculate;
 
         public HomeController(
             ILogger<HomeController> logger,
@@ -21,16 +21,28 @@ namespace MathExpressionSolver.Controllers
 
         public IActionResult Index()
         {
-            var resultModel = new DataModel{Data = "No result yet"};
+            var resultModel = new DataModel { Data = "No result yet" };
             return View(resultModel);
         }
 
         [HttpPost]
-        public IActionResult Index(string input)
+        public IActionResult Index(DataModel inputModel)
         {
-            var resultModel = new DataModel { Data = input };
+            var resultModel = new DataModel();
 
-          resultModel.Data= this._calculate.ProcessData(input);
+            try
+            {
+                resultModel.Input = inputModel.Input;
+                resultModel.Data = this._calculate.ProcessData(inputModel.Input);
+            }
+            catch (Exception e)
+            {
+                this.ModelState.AddModelError(String.Empty, e.Message);
+                if (this.ModelState.IsValid==false)
+                {
+                    return this.View(resultModel);
+                }
+            }
             return View(resultModel);
         }
 

@@ -6,165 +6,45 @@ namespace MathExpressionSolver.Services
     {
         private readonly IStringService _stringService;
         private readonly IValidateService _validateService;
-        private readonly HashSet<char> highPriority = new HashSet<char> { '*', '/' };
-        private readonly HashSet<char> lowPrority = new HashSet<char> { '+', '-' };
+        private readonly IShuntingYardAlgorithm _shuntingYardAlgorithm;
+        private readonly IReversePolishAlgorithm _reversePolishAlgorithm;
+
         public CalculateService(
             IStringService stringService,
-            IValidateService validateService)
+            IValidateService validateService,
+            IShuntingYardAlgorithm shuntingYardAlgorithm,
+            IReversePolishAlgorithm reversePolishAlgorithm)
         {
             _stringService = stringService;
             _validateService = validateService;
+            _shuntingYardAlgorithm = shuntingYardAlgorithm;
+            _reversePolishAlgorithm = reversePolishAlgorithm;
         }
         public string ProcessData(string input)
         {
 
             input = this._stringService.RemoveWhiteSpace(input);
 
-            var isInputValid = this._validateService.IsInputValid(input);
-
-            if (isInputValid == false)
+            try
             {
-                throw new InvalidOperationException("Invalid input data");
+                this._validateService.IsInputValid(input);
+            }
+            catch (InvalidOperationException e)
+            {
+                throw new InvalidOperationException(e.Message);
             }
 
-            var shuntingYardAlgorithmResult = this.ShuntingYardAlgorithm(input);
-
-            var reversedPolishAlgorithm = ReversedPolishAlgorithm(shuntingYardAlgorithmResult);
-
-
-            return reversedPolishAlgorithm;
-        }
-
-        private string ReversedPolishAlgorithm(Queue<string> shuntingYardAlgorithmResult)
-        {
-            var numberStack = new Stack<double>();
-
-            foreach (var element in shuntingYardAlgorithmResult)
+            var shuntingYardAlgorithmResult = this._shuntingYardAlgorithm.ShuntingYardAlgorithmResult(input);
+            try
             {
-                var currentElement = element;
-
-                if (double.TryParse(currentElement, out double addNumber))
-                {
-                    numberStack.Push(addNumber);
-                }
-                else
-                {
-                    var result = 0.0;
-
-                    switch (currentElement)
-                    {
-                        case "+":
-                            result = this.Add(numberStack.Pop(), numberStack.Pop());
-                            break;
-                        case "-":
-                            result = this.Subtract(numberStack.Pop(), numberStack.Pop());
-                            break;
-                        case "*":
-                            result = this.Multiply(numberStack.Pop(), numberStack.Pop());
-                            break;
-                        case "/":
-                            result = this.Divide(numberStack.Pop(), numberStack.Pop());
-                            break;
-                    }
-
-                    numberStack.Push(result);
-
-                }
+                var reversePolishAlgorithmResult = this._reversePolishAlgorithm.ReversePolishAlgorithmResult(shuntingYardAlgorithmResult);
+                return reversePolishAlgorithmResult;
             }
-
-            return string.Join("", numberStack);
-        }
-
-        private Queue<string> ShuntingYardAlgorithm(string input)
-        {
-            var operators = new Stack<char>();
-
-            var output = new Queue<string>();
-
-            for (int i = 0; i < input.Length; i++)
+            catch (Exception e)
             {
-                var expressionElement = input[i];
-
-                if (char.IsNumber(expressionElement))
-                {
-                    var operand = expressionElement.ToString();
-                    var startIndex = i + 1;
-
-                    while (startIndex < input.Length - 1 && 
-                           char.IsNumber(input[startIndex]))
-                    {
-                        operand += input[startIndex];
-                        startIndex++;
-                        i++;
-                    }
-
-                    output.Enqueue(operand);
-                }
-                else
-                {
-                    if (expressionElement == ')')
-                    {
-                        var currentElement = operators.Pop();
-
-                        while (currentElement != '(')
-                        {
-                            output.Enqueue(currentElement.ToString());
-                            currentElement = operators.Pop();
-                        }
-                    }
-                    else
-                    {
-                        var topStackOperand = ' ';
-
-                        if (operators.Count != 0)
-                        {
-                            topStackOperand = operators.Peek();
-                        }
-
-                        if (highPriority.Contains(topStackOperand) &&
-                            lowPrority.Contains(expressionElement))
-                        {
-                            output.Enqueue(operators.Pop().ToString());
-                        }
-                        else if (topStackOperand == '*' && expressionElement == '/')
-                        {
-                            output.Enqueue(operators.Pop().ToString());
-
-                        }
-
-                        operators.Push(expressionElement);
-                    }
-
-                }
+                throw new InvalidOperationException(e.Message);
             }
-
-            while (operators.Count != 0)
-            {
-                output.Enqueue(operators.Pop().ToString());
-            }
-
-            return output;
-        }
-
-
-        private double Add(double first, double second)
-        {
-            return first + second;
-        }
-
-        private double Multiply(double first, double second)
-        {
-            return first * second;
-        }
-
-        private double Subtract(double first, double second)
-        {
-            return second - first;
-        }
-
-        private double Divide(double first, double second)
-        {
-            return second / first;
+           
         }
     }
 }

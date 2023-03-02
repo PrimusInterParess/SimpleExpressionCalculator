@@ -8,6 +8,8 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddTransient<ICalculate, CalculateService>();
 builder.Services.AddTransient<IStringService, StringService>();
 builder.Services.AddTransient<IValidateService, ValidateService>();
+builder.Services.AddTransient<IReversePolishAlgorithm, ReversePolishAlgorithm>();
+builder.Services.AddTransient<IShuntingYardAlgorithm, ShuntingYardAlgorithm>();
 
 var app = builder.Build();  
 
