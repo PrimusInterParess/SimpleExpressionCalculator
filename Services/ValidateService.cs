@@ -5,6 +5,8 @@ namespace MathExpressionSolver.Services
     public class ValidateService : IValidateService
     {
         private readonly HashSet<char> elements = new HashSet<char> { '+', '-', '*', '/', '(', ')' };
+        private const char OpenBracket = '(';
+        private const char ClosedBracket = ')';
 
         public bool ZeroNumber(double number)
         {
@@ -53,7 +55,7 @@ namespace MathExpressionSolver.Services
 
             for (int i = 0; i < input.Length; i++)
             {
-                if (input[i] == '(' || input[i] == ')')
+                if (input[i] == OpenBracket || input[i] == ClosedBracket)
                 {
                     parenthesis += input[i];
                 }
@@ -71,7 +73,7 @@ namespace MathExpressionSolver.Services
             {
                 char ch = parenthesis[i];
 
-                if (ch == '(')
+                if (ch == OpenBracket)
                 {
                     parenthesesChars.Push(ch);
 

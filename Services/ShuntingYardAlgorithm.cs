@@ -2,11 +2,15 @@
 
 namespace MathExpressionSolver.Services
 {
-    public class ShuntingYardAlgorithm:IShuntingYardAlgorithm
+    public class ShuntingYardAlgorithm : IShuntingYardAlgorithm
     {
 
         private readonly HashSet<char> highPriority = new HashSet<char> { '*', '/' };
         private readonly HashSet<char> lowPrority = new HashSet<char> { '+', '-' };
+        private const char Division = '/';
+        private const char Multiply = '*';
+        private const char CloseBracket = ')';
+        private const char OpenBracket = '(';
 
         public Queue<string> ShuntingYardAlgorithmResult(string input)
         {
@@ -35,11 +39,11 @@ namespace MathExpressionSolver.Services
                 }
                 else
                 {
-                    if (expressionElement == ')')
+                    if (expressionElement == CloseBracket)
                     {
                         var currentElement = operators.Pop();
 
-                        while (currentElement != '(')
+                        while (currentElement != OpenBracket)
                         {
                             output.Enqueue(currentElement.ToString());
                             currentElement = operators.Pop();
@@ -59,10 +63,15 @@ namespace MathExpressionSolver.Services
                         {
                             output.Enqueue(operators.Pop().ToString());
                         }
-                        else if (topStackOperand == '*' && expressionElement == '/')
+                        else if (highPriority.Contains(topStackOperand)&&
+                                 highPriority.Contains(expressionElement))
                         {
                             output.Enqueue(operators.Pop().ToString());
-
+                        }
+                        else if(lowPrority.Contains(topStackOperand)&&
+                                lowPrority.Contains(expressionElement))
+                        {
+                            output.Enqueue((operators.Pop().ToString()));
                         }
 
                         operators.Push(expressionElement);

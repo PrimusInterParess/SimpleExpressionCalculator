@@ -5,6 +5,10 @@ namespace MathExpressionSolver.Services
     public class ReversePolishAlgorithm:IReversePolishAlgorithm
     {
         private readonly IValidateService _validateService;
+        private const string Division = "/";
+        private const string Multiplication = "*";
+        private const string Addition = "+";
+        private const string Minus = "-";
 
         public ReversePolishAlgorithm(IValidateService validateService)
         {
@@ -28,23 +32,26 @@ namespace MathExpressionSolver.Services
                 {
                     var result = 0.0;
 
-                    switch (currentElement)
+                    if (numberStack.Count >= 2)
                     {
-                        case "+":
-                            result = this.Add(numberStack.Pop(), numberStack.Pop());
-                            break;
-                        case "-":
-                            result = this.Subtract(numberStack.Pop(), numberStack.Pop());
-                            break;
-                        case "*":
-                            result = this.Multiply(numberStack.Pop(), numberStack.Pop());
-                            break;
-                        case "/":
-                            result = this.Divide(numberStack.Pop(), numberStack.Pop());
-                            break;
-                    }
+                        switch (currentElement)
+                        {
+                            case Addition:
+                                result = this.Add(numberStack.Pop(), numberStack.Pop());
+                                break;
+                            case Minus:
+                                result = this.Subtract(numberStack.Pop(), numberStack.Pop());
+                                break;
+                            case Multiplication:
+                                result = this.Multiply(numberStack.Pop(), numberStack.Pop());
+                                break;
+                            case Division:
+                                result = this.Divide(numberStack.Pop(), numberStack.Pop());
+                                break;
+                        }
 
-                    numberStack.Push(result);
+                        numberStack.Push(result);
+                    }
 
                 }
             }

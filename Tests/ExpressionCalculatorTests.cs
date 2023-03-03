@@ -3,7 +3,7 @@ using Xunit;
 
 namespace MathExpressionSolver.Tests
 {
-    public class ExpressionCalulatorTests   
+    public class ExpressionCalculatorTests   
     {
         [Fact]
         public void ZeroDivisionShouldThrowException()

@@ -11,17 +11,5 @@ namespace MathExpressionSolver.Services
             return Regex.Replace(data, @"\s", "");
 
         }
-
-        public Queue<char> GetExpressionQ(string data)
-        { 
-            var result = new Queue<char>();
-            
-            for (int i = 0; i < data.Length; i++)
-            {
-                result.Enqueue(data[i]);
-            }
-
-            return result;
-        }
     }
 }
