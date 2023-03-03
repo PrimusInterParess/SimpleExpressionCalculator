@@ -7,6 +7,7 @@ namespace MathExpressionSolver.Services
         private readonly HashSet<char> elements = new HashSet<char> { '+', '-', '*', '/', '(', ')' };
         private const char OpenBracket = '(';
         private const char ClosedBracket = ')';
+        private const char Minus = '-';
 
         public bool ZeroNumber(double number)
         {
@@ -34,6 +35,11 @@ namespace MathExpressionSolver.Services
             {
                 throw new InvalidOperationException("Invalid expression. Parenthesis are unbalanced");
             }
+
+            if (StartsWithNegativeSigh(input))
+            {
+                throw new InvalidOperationException("Invalid expression. Cannot start with negative sign");
+            }
         }
 
         private bool ContainsCharacters(string input)
@@ -47,6 +53,11 @@ namespace MathExpressionSolver.Services
             }
 
             return false;
+        }
+
+        private bool StartsWithNegativeSigh(string input)
+        {
+            return input[0] == Minus;
         }
 
         private bool AreParenthesisBalanced(string input)
