@@ -7,8 +7,8 @@ namespace MathExpressionSolver.Services
 
         private readonly HashSet<char> highPriority = new HashSet<char> { '*', '/' };
         private readonly HashSet<char> lowPrority = new HashSet<char> { '+', '-' };
-        private const char Division = '/';
-        private const char Multiply = '*';
+        private const char Minus = '-';
+        private const char Addition = '+';
         private const char CloseBracket = ')';
         private const char OpenBracket = '(';
 
@@ -27,7 +27,7 @@ namespace MathExpressionSolver.Services
                     var operand = expressionElement.ToString();
                     var startIndex = i + 1;
 
-                    while (startIndex < input.Length - 1 &&
+                    while (startIndex <= input.Length - 1 &&
                            char.IsNumber(input[startIndex]))
                     {
                         operand += input[startIndex];
@@ -39,18 +39,62 @@ namespace MathExpressionSolver.Services
                 }
                 else
                 {
-                    if (expressionElement == CloseBracket)
+                    if (expressionElement == OpenBracket)
+                    {
+                        if (operators.Count != 0)
+                        {
+                            var token = operators.Peek();
+
+                            if (input[i + 1] == Minus &&
+                                token == Minus)
+                            {
+                                operators.Pop();
+                                operators.Push(expressionElement);
+                                operators.Push(Addition);
+                                i++;
+
+                                if (input[i + 2] == Addition)
+                                {
+                                    output.Enqueue(input[i + 1].ToString());
+                                    operators.Push(Minus);
+                                    i += 2;
+                                }
+
+                                if (input[i + 2] == Minus)
+                                {
+                                    output.Enqueue(input[i + 1].ToString());
+                                    operators.Push(Addition);
+                                    i += 2;
+                                }
+                            }
+                            else
+                            {
+                                operators.Push(expressionElement);
+                            }
+                        }
+                        else
+                        {
+                            operators.Push(expressionElement);
+
+                        }
+                    }
+                    else if (expressionElement == CloseBracket)
                     {
                         var currentElement = operators.Pop();
 
                         while (currentElement != OpenBracket)
                         {
                             output.Enqueue(currentElement.ToString());
-                            currentElement = operators.Pop();
+                            if (operators.Count > 0)
+                            {
+                                currentElement = operators.Pop();
+
+                            }
                         }
                     }
                     else
                     {
+
                         var topStackOperand = ' ';
 
                         if (operators.Count != 0)
@@ -63,12 +107,12 @@ namespace MathExpressionSolver.Services
                         {
                             output.Enqueue(operators.Pop().ToString());
                         }
-                        else if (highPriority.Contains(topStackOperand)&&
+                        else if (highPriority.Contains(topStackOperand) &&
                                  highPriority.Contains(expressionElement))
                         {
                             output.Enqueue(operators.Pop().ToString());
                         }
-                        else if(lowPrority.Contains(topStackOperand)&&
+                        else if (lowPrority.Contains(topStackOperand) &&
                                 lowPrority.Contains(expressionElement))
                         {
                             output.Enqueue((operators.Pop().ToString()));
