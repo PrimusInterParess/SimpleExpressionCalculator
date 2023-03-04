@@ -1,10 +1,13 @@
 ﻿using MathExpressionSolver.Services.Contracts;
+using System.Linq;
 
 namespace MathExpressionSolver.Services
 {
     public class ValidateService : IValidateService
     {
         private readonly HashSet<char> elements = new HashSet<char> { '+', '-', '*', '/', '(', ')' };
+        private readonly HashSet<char> operators = new HashSet<char> { '+', '-', '*', '/' };
+        private readonly HashSet<char> notAllowedBeforeOpenBrackets = new HashSet<char> { '*', '/' ,'+'};
         private const char OpenBracket = '(';
         private const char ClosedBracket = ')';
         private const char Minus = '-';
@@ -26,7 +29,17 @@ namespace MathExpressionSolver.Services
                 throw new InvalidOperationException("Expression length is invalid");
             }
 
-            if (ContainsCharacters(input))
+            if (StartsWithNegativeSigh(input))
+            {
+                throw new InvalidOperationException("Invalid expression. Cannot start with negative sign");
+            }
+
+            if (EndsWithOperator(input))
+            {
+                throw new InvalidOperationException("Invalid expression. Cannot end with an operator");
+            }
+
+            if (NotValidExpression(input))
             {
                 throw new InvalidOperationException("Invalid expression. Contains incorrect characters");
             }
@@ -35,14 +48,9 @@ namespace MathExpressionSolver.Services
             {
                 throw new InvalidOperationException("Invalid expression. Parenthesis are unbalanced");
             }
-
-            if (StartsWithNegativeSigh(input))
-            {
-                throw new InvalidOperationException("Invalid expression. Cannot start with negative sign");
-            }
         }
 
-        private bool ContainsCharacters(string input)
+        private bool NotValidExpression(string input)
         {
             for (int i = 0; i < input.Length; i++)
             {
@@ -50,6 +58,38 @@ namespace MathExpressionSolver.Services
                 {
                     return true;
                 }
+
+                if (input[i] == OpenBracket)
+                {
+                    if (notAllowedBeforeOpenBrackets.Contains(input[i + 1]))
+                    {
+                        return true;
+                    }
+                }
+
+                if (input[i] == ClosedBracket)
+                {
+                    if (operators.Contains(input[i - 1]))
+                    {
+                        return true;
+                    }
+                }
+
+                if (operators.Contains(input[i]) && 
+                    operators.Contains(input[i+1]))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private bool EndsWithOperator(string input)
+        {
+            if (operators.Contains(input[input.Length - 1]))
+            {
+                return true;
             }
 
             return false;

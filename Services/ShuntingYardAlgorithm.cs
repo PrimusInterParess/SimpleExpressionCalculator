@@ -45,6 +45,8 @@ namespace MathExpressionSolver.Services
                         {
                             var token = operators.Peek();
 
+                            // TODO: fix it for not just one digit
+
                             if (input[i + 1] == Minus &&
                                 token == Minus)
                             {
@@ -78,6 +80,9 @@ namespace MathExpressionSolver.Services
 
                         }
                     }
+
+                    // TODO: apply rule for [-,+] inside brackets
+
                     else if (expressionElement == CloseBracket)
                     {
                         var currentElement = operators.Pop();
