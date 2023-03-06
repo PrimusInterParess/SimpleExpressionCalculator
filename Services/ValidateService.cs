@@ -10,7 +10,7 @@ namespace MathExpressionSolver.Services
         private readonly HashSet<char> notAllowedBeforeOpenBrackets = new HashSet<char> { '*', '/' ,'+'};
         private const char OpenBracket = '(';
         private const char ClosedBracket = ')';
-        private const char Minus = '-';
+        private const char Subtraction = '-';
 
         public bool ZeroNumber(double number)
         {
@@ -97,7 +97,7 @@ namespace MathExpressionSolver.Services
 
         private bool StartsWithNegativeSigh(string input)
         {
-            return input[0] == Minus;
+            return input[0] == Subtraction;
         }
 
         private bool AreParenthesisBalanced(string input)

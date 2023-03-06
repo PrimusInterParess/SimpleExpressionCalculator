@@ -7,7 +7,7 @@ namespace MathExpressionSolver.Services
 
         private readonly HashSet<char> highPriority = new HashSet<char> { '*', '/' };
         private readonly HashSet<char> lowPrority = new HashSet<char> { '+', '-' };
-        private const char Minus = '-';
+        private const char Subtraction = '-';
         private const char Addition = '+';
         private const char CloseBracket = ')';
         private const char OpenBracket = '(';
@@ -27,14 +27,7 @@ namespace MathExpressionSolver.Services
                     var operand = expressionElement.ToString();
                     var startIndex = i + 1;
 
-                    while (startIndex <= input.Length - 1 &&
-                           char.IsNumber(input[startIndex]))
-                    {
-                        operand += input[startIndex];
-                        startIndex++;
-                        i++;
-                    }
-
+                    operand = ExtractNumber(input, startIndex, operand, ref i);
                     output.Enqueue(operand);
                 }
                 else
@@ -45,28 +38,32 @@ namespace MathExpressionSolver.Services
                         {
                             var token = operators.Peek();
 
-                            // TODO: fix it for not just one digit
-
-                            if (input[i + 1] == Minus &&
-                                token == Minus)
+                            // TODO: fix it so it should work with numbers with more than one digit 
+                            if (input[i + 1] == Subtraction &&
+                                token == Subtraction)
                             {
                                 operators.Pop();
                                 operators.Push(expressionElement);
                                 operators.Push(Addition);
                                 i++;
 
-                                if (input[i + 2] == Addition)
+                                var operand = input[i + 1].ToString();
+                                var startIndex = i + 2;
+
+                                operand = ExtractNumber(input, startIndex, operand, ref i);
+
+                                if (input[i + 1] == Addition)
                                 {
-                                    output.Enqueue(input[i + 1].ToString());
-                                    operators.Push(Minus);
-                                    i += 2;
+                                    output.Enqueue(operand);
+                                    operators.Push(Subtraction);
+                                    i += 1;
                                 }
 
-                                if (input[i + 2] == Minus)
+                                if (input[i + 1] == Subtraction)
                                 {
-                                    output.Enqueue(input[i + 1].ToString());
+                                    output.Enqueue(operand);
                                     operators.Push(Addition);
-                                    i += 2;
+                                    i += 1;
                                 }
                             }
                             else
@@ -74,15 +71,33 @@ namespace MathExpressionSolver.Services
                                 operators.Push(expressionElement);
                             }
                         }
+                        // TODO: fix it so it should work with numbers with more than one digit
+                        else if (input[i + 1] == Subtraction &&
+                                 input[i + 3] == Addition)
+                        {
+                            operators.Push(expressionElement);
+                            output.Enqueue(input[i + 2].ToString());
+                            output.Enqueue(input[i + 4].ToString());
+                            operators.Push(Subtraction);
+                            i += 4;
+                        }
+                        // TODO: fix it so it should work with numbers with more than one digit
+                        else if (input[i + 1] == Subtraction &&
+                                 input[i + 3] == Subtraction)
+                        {
+                            operators.Push(expressionElement);
+                            output.Enqueue(Subtraction + input[i + 2].ToString());
+                            output.Enqueue( input[i + 4].ToString());
+                            operators.Push(Subtraction);
+                            i += 4;
+                        }
                         else
                         {
                             operators.Push(expressionElement);
 
                         }
                     }
-
                     // TODO: apply rule for [-,+] inside brackets
-
                     else if (expressionElement == CloseBracket)
                     {
                         var currentElement = operators.Pop();
@@ -99,7 +114,6 @@ namespace MathExpressionSolver.Services
                     }
                     else
                     {
-
                         var topStackOperand = ' ';
 
                         if (operators.Count != 0)
@@ -135,6 +149,19 @@ namespace MathExpressionSolver.Services
             }
 
             return output;
+        }
+
+        private static string ExtractNumber(string input, int startIndex, string operand, ref int i)
+        {
+            while (startIndex <= input.Length - 1 &&
+                   char.IsNumber(input[startIndex]))
+            {
+                operand += input[startIndex];
+                startIndex++;
+                i++;
+            }
+
+            return operand;
         }
     }
 }

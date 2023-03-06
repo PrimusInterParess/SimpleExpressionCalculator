@@ -8,7 +8,7 @@ namespace MathExpressionSolver.Services
         private const string Division = "/";
         private const string Multiplication = "*";
         private const string Addition = "+";
-        private const string Minus = "-";
+        private const string Subtraction = "-";
 
         public ReversePolishAlgorithm(IValidateService validateService)
         {
@@ -39,7 +39,7 @@ namespace MathExpressionSolver.Services
                             case Addition:
                                 result = this.Add(numberStack.Pop(), numberStack.Pop());
                                 break;
-                            case Minus:
+                            case Subtraction:
                                 result = this.Subtract(numberStack.Pop(), numberStack.Pop());
                                 break;
                             case Multiplication:
