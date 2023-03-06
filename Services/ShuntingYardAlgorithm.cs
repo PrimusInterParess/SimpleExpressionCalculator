@@ -38,6 +38,7 @@ namespace MathExpressionSolver.Services
                         {
                             var token = operators.Peek();
 
+                            // TODO: fix the functionality for negative numbers
                             // TODO: fix it so it should work with numbers with more than one digit 
                             if (input[i + 1] == Subtraction &&
                                 token == Subtraction)
@@ -71,26 +72,26 @@ namespace MathExpressionSolver.Services
                                 operators.Push(expressionElement);
                             }
                         }
-                        // TODO: fix it so it should work with numbers with more than one digit
-                        else if (input[i + 1] == Subtraction &&
-                                 input[i + 3] == Addition)
-                        {
-                            operators.Push(expressionElement);
-                            output.Enqueue(input[i + 2].ToString());
-                            output.Enqueue(input[i + 4].ToString());
-                            operators.Push(Subtraction);
-                            i += 4;
-                        }
-                        // TODO: fix it so it should work with numbers with more than one digit
-                        else if (input[i + 1] == Subtraction &&
-                                 input[i + 3] == Subtraction)
-                        {
-                            operators.Push(expressionElement);
-                            output.Enqueue(Subtraction + input[i + 2].ToString());
-                            output.Enqueue( input[i + 4].ToString());
-                            operators.Push(Subtraction);
-                            i += 4;
-                        }
+                        // TODO: apply functionality for negative numbers
+                        //if (input[i + 1] == Subtraction &&
+                        //         input[i + 3] == Addition)
+                        //{
+                        //    operators.Push(expressionElement);
+                        //    output.Enqueue(input[i + 2].ToString());
+                        //    output.Enqueue(input[i + 4].ToString());
+                        //    operators.Push(Subtraction);
+                        //    i += 4;
+                        //}
+                        //
+                        // if (input[i + 1] == Subtraction &&
+                        //         input[i + 3] == Subtraction)
+                        //{
+                        //    operators.Push(expressionElement);
+                        //    output.Enqueue(Subtraction + input[i + 2].ToString());
+                        //    output.Enqueue( input[i + 4].ToString());
+                        //    operators.Push(Subtraction);
+                        //    i += 4;
+                        //}
                         else
                         {
                             operators.Push(expressionElement);
