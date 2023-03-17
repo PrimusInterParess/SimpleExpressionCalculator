@@ -1,6 +1,6 @@
 # SimpleExpressionCalculator
 
-This is simple expression calculator that evaluates expression like:
+This is simple expression calculator that calculates expression like:
 - (1 + 2) * 4 / 6 
 - 3 * (4 + 5)
 - 2 + 3 +(4 + 5) * 6
