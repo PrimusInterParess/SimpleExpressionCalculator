@@ -1,6 +1,6 @@
 # SimpleExpressionCalculator
 
-This is simple expression calculator that works with the following operators  + , - , * , / , ( , ).It calculates expression like:
+This is simple expression calculator that works with the following operators  + , - , * , / , ( , ). It calculates expression like:
 - (1 + 2) * 4 / 6 
 - 3 * (4 + 5)
 - 2 + 3 +(4 + 5) * 6
